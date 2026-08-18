@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Portal Akun</title>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', initialTheme);
+        })();
+    </script>
     <style>
         :root {
             --primary: #2563eb;
@@ -15,6 +23,12 @@
             --text-muted: #64748b;
             --border-color: #e2e8f0;
             --border-focus: #2563eb;
+            --input-bg: #ffffff;
+            --input-border: #cbd5e1;
+            --input-placeholder: #94a3b8;
+            --toggle-bg: #ffffff;
+            --toggle-border: #cbd5e1;
+            --toggle-hover: #f1f5f9;
             --danger: #dc2626;
             --danger-bg: #fef2f2;
             --danger-border: #fecaca;
@@ -22,6 +36,29 @@
             --radius-lg: 12px;
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
             --transition: all 0.2s ease-in-out;
+            --theme-transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary: #3b82f6;
+            --primary-hover: #60a5fa;
+            --primary-focus: rgba(59, 130, 246, 0.35);
+            --bg-page: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --border-focus: #3b82f6;
+            --input-bg: #0f172a;
+            --input-border: #334155;
+            --input-placeholder: #64748b;
+            --toggle-bg: #1e293b;
+            --toggle-border: #334155;
+            --toggle-hover: #334155;
+            --danger: #f87171;
+            --danger-bg: rgba(239, 68, 68, 0.15);
+            --danger-border: rgba(239, 68, 68, 0.35);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
         }
 
         * {
@@ -40,6 +77,37 @@
             background-color: var(--bg-page);
             color: var(--text-main);
             padding: 20px;
+            transition: var(--theme-transition);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: var(--toggle-bg);
+            border: 1px solid var(--toggle-border);
+            color: var(--text-main);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: var(--theme-transition), transform 0.2s ease;
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--toggle-hover);
+            transform: scale(1.08);
+        }
+
+        .theme-toggle:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--primary-focus);
         }
 
         .login-card {
@@ -50,6 +118,7 @@
             border: 1px solid var(--border-color);
             width: 100%;
             max-width: 400px;
+            transition: var(--theme-transition);
         }
 
         .login-header {
@@ -104,15 +173,15 @@
             padding: 11px 14px;
             font-size: 14px;
             color: var(--text-main);
-            background-color: #ffffff;
-            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
             border-radius: var(--radius-md);
             outline: none;
-            transition: var(--transition);
+            transition: var(--theme-transition), border-color 0.2s, box-shadow 0.2s;
         }
 
         .form-input::placeholder {
-            color: #94a3b8;
+            color: var(--input-placeholder);
         }
 
         .form-input:focus {
@@ -198,6 +267,8 @@
 </head>
 <body>
 
+    <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode" title="Ganti Tema">🌙</button>
+
     <main class="login-card">
         <div class="login-header">
             <h1>Masuk ke Akun</h1>
@@ -255,6 +326,29 @@
 
     <script>
         const API_URL = "http://localhost:5000/api/login";
+
+        // Theme Toggle Logic
+        const themeToggleBtn = document.getElementById("themeToggle");
+        function updateThemeUI(theme) {
+            if (themeToggleBtn) {
+                themeToggleBtn.textContent = theme === "dark" ? "☀️" : "🌙";
+                themeToggleBtn.setAttribute("aria-label", theme === "dark" ? "Ganti ke mode terang" : "Ganti ke mode gelap");
+                themeToggleBtn.setAttribute("title", theme === "dark" ? "Ganti ke Mode Terang" : "Ganti ke Mode Gelap");
+            }
+        }
+
+        const currentAppliedTheme = document.documentElement.getAttribute("data-theme") || "light";
+        updateThemeUI(currentAppliedTheme);
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener("click", () => {
+                const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+                const newTheme = currentTheme === "dark" ? "light" : "dark";
+                document.documentElement.setAttribute("data-theme", newTheme);
+                localStorage.setItem("theme", newTheme);
+                updateThemeUI(newTheme);
+            });
+        }
 
         const form = document.getElementById("loginForm");
         const emailInput = document.getElementById("email");

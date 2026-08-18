@@ -205,112 +205,6 @@ Melakukan pengujian menyeluruh (API, UI, validasi, dan End-to-End flow) untuk me
     return be_task_file, fe_task_file, qa_task_file
 
 
-def run_be_agent(task_file=None):
-    if not task_file or not task_file.exists():
-        # Cari file BE di todo
-        be_files = list(TODO_DIR.glob("BE*.md"))
-        if not be_files:
-            print("⚠️ Tidak ada task BE di tasks/todo/")
-            return
-        task_file = be_files[0]
-
-    doing_file = DOING_DIR / task_file.name
-    shutil.move(str(task_file), str(doing_file))
-    print(f"\n🚀 [BE AGENT] Memulai pengerjaan: {doing_file.name}")
-
-    task_content = doing_file.read_text(encoding="utf-8")
-
-    prompt = f"""
-Anda adalah BACKEND ENGINEER AGENT.
-
-Tugas Anda:
-Kerjakan task backend berikut secara tuntas:
-{task_content}
-
-Aturan:
-- Modifikasi hanya folder backend/ dan file task backend jika diperlukan.
-- Jalankan test backend untuk memastikan tidak ada error.
-- Berikan ringkasan hasil pekerjaan Anda.
-"""
-    output = run_agy("self", prompt)
-
-    done_file = DONE_DIR / doing_file.name
-    shutil.move(str(doing_file), str(done_file))
-    print(f"✅ [BE AGENT] Selesai. Task dipindahkan ke: {done_file.relative_to(PROJECT)}")
-    return output
-
-
-def run_fe_agent(task_file=None):
-    if not task_file or not task_file.exists():
-        # Cari file FE di todo
-        fe_files = list(TODO_DIR.glob("FE*.md"))
-        if not fe_files:
-            print("⚠️ Tidak ada task FE di tasks/todo/")
-            return
-        task_file = fe_files[0]
-
-    doing_file = DOING_DIR / task_file.name
-    shutil.move(str(task_file), str(doing_file))
-    print(f"\n🎨 [FE AGENT] Memulai pengerjaan: {doing_file.name}")
-
-    task_content = doing_file.read_text(encoding="utf-8")
-
-    prompt = f"""
-Anda adalah FRONTEND ENGINEER AGENT.
-
-Tugas Anda:
-Kerjakan task frontend berikut secara tuntas:
-{task_content}
-
-Aturan:
-- Modifikasi hanya folder frontend/ dan file task frontend.
-- Pastikan antarmuka bersih, responsif, validasi client berfungsi, dan terintegrasi dengan backend.
-- Berikan ringkasan hasil pekerjaan Anda.
-"""
-    output = run_agy("self", prompt)
-
-    done_file = DONE_DIR / doing_file.name
-    shutil.move(str(doing_file), str(done_file))
-    print(f"✅ [FE AGENT] Selesai. Task dipindahkan ke: {done_file.relative_to(PROJECT)}")
-    return output
-
-
-def run_qa_agent(task_file=None):
-    if not task_file or not task_file.exists():
-        # Cari file QA di todo
-        qa_files = list(TODO_DIR.glob("QA*.md"))
-        if not qa_files:
-            print("⚠️ Tidak ada task QA di tasks/todo/")
-            return
-        task_file = qa_files[0]
-
-    doing_file = DOING_DIR / task_file.name
-    shutil.move(str(task_file), str(doing_file))
-    print(f"\n🧪 [QA AGENT] Memulai testing & verifikasi: {doing_file.name}")
-
-    task_content = doing_file.read_text(encoding="utf-8")
-
-    prompt = f"""
-Anda adalah QA ENGINEER AGENT.
-
-Tugas Anda:
-Lakukan pengujian menyeluruh (API, UI, validasi, E2E) untuk task berikut:
-{task_content}
-
-Aturan:
-- Jalankan test runner automatis dan verifikasi fungsionalitas.
-- Jika ada bug, laporkan.
-- Jika semua PASS, nyatakan status PASS dan buat laporan verifikasi di tasks/done/.
-"""
-    output = run_agy("self", prompt)
-
-    done_file = DONE_DIR / doing_file.name
-    if doing_file.exists():
-        shutil.move(str(doing_file), str(done_file))
-    print(f"✅ [QA AGENT] Selesai. Status Sign-Off: PASS")
-    return output
-
-
 def main():
     print("========================================")
     print("       LEARNING AGENT AI ORCHESTRATOR   ")
@@ -320,23 +214,6 @@ def main():
         print()
         print("Cara penggunaan:")
         print('  python main.py "Buat fitur login"')
-        print('  python main.py --fe-only    (Jalankan hanya FE Agent)')
-        print('  python main.py --be-only    (Jalankan hanya BE Agent)')
-        print('  python main.py --qa-only    (Jalankan hanya QA Agent)')
-        return
-
-    arg = sys.argv[1].strip()
-
-    if arg == "--fe-only":
-        run_fe_agent()
-        return
-
-    if arg == "--be-only":
-        run_be_agent()
-        return
-
-    if arg == "--qa-only":
-        run_qa_agent()
         return
 
     requirement = " ".join(sys.argv[1:])
@@ -358,20 +235,10 @@ def main():
     # 1. Parse PLAN dan buat task terpisah di tasks/todo/
     be_task, fe_task, qa_task = parse_and_create_tasks(plan, requirement)
 
-    # 2. Delegasikan pekerjaan secara otomatis dan berurutan
-    print("\n⚡ MEMULAI PENDELEGASIAN OTOMATIS...")
-
-    print("\n--- [TAHAP 1: BACKEND AGENT] ---")
-    run_be_agent(be_task)
-
-    print("\n--- [TAHAP 2: FRONTEND AGENT] ---")
-    run_fe_agent(fe_task)
-
-    print("\n--- [TAHAP 3: QA AGENT] ---")
-    run_qa_agent(qa_task)
-
+    # 2. Pendelegasian
     print("\n========================================")
-    print("🎉 SEMUA TAHAP SELESAI (BE -> FE -> QA)")
+    print("🎉 TUGAS TELAH DIBUAT DI FOLDER tasks/todo/")
+    print("🤖 WORKERS ANDA (FE, BE, QA) AKAN OTOMATIS MENGERJAKANNYA!")
     print("========================================")
 
 

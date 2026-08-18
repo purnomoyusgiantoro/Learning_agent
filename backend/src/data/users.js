@@ -1,26 +1,36 @@
 const { hashPassword } = require('../utils/crypto');
 
-// Initial in-memory user store with hashed passwords
-const users = [
+const DEFAULT_USERS = [
   {
     id: "1",
     email: "user@example.com",
     name: "User Name",
-    passwordHash: hashPassword("securepassword123")
+    role: "user",
+    passwordHash: hashPassword("securepassword123"),
+    created_at: "2026-08-01T00:00:00.000Z",
+    updated_at: "2026-08-01T00:00:00.000Z"
   },
   {
     id: "2",
     email: "admin@example.com",
     name: "Administrator",
-    passwordHash: hashPassword("admin123")
+    role: "admin",
+    passwordHash: hashPassword("admin123"),
+    created_at: "2026-08-01T00:00:00.000Z",
+    updated_at: "2026-08-01T00:00:00.000Z"
   },
   {
     id: "3",
     email: "purnomo@example.com",
     name: "Purnomo Yusgiantoro",
-    passwordHash: hashPassword("purnomo123")
+    role: "agent_manager",
+    passwordHash: hashPassword("purnomo123"),
+    created_at: "2026-08-01T00:00:00.000Z",
+    updated_at: "2026-08-01T00:00:00.000Z"
   }
 ];
+
+let users = JSON.parse(JSON.stringify(DEFAULT_USERS));
 
 /**
  * Find user by email (case-insensitive)
@@ -47,7 +57,8 @@ function emailExists(email) {
  * @returns {object|null}
  */
 function findUserById(id) {
-  return users.find(u => u.id === id) || null;
+  if (!id) return null;
+  return users.find(u => String(u.id) === String(id)) || null;
 }
 
 /**
@@ -56,20 +67,25 @@ function findUserById(id) {
  * @param {string} param0.name
  * @param {string} param0.email
  * @param {string} param0.password
+ * @param {string} param0.role
  * @returns {object} created user without passwordHash
  */
-function createUser({ name, email, password }) {
+function createUser({ name, email, password, role = 'user' }) {
   const maxId = users.reduce((max, u) => {
     const numId = parseInt(u.id, 10);
     return isNaN(numId) ? max : Math.max(max, numId);
   }, 0);
   const nextId = String(maxId + 1);
+  const now = new Date().toISOString();
 
   const newUser = {
     id: nextId,
     email: email.trim().toLowerCase(),
     name: name.trim(),
-    passwordHash: hashPassword(password)
+    role: role || 'user',
+    passwordHash: hashPassword(password),
+    created_at: now,
+    updated_at: now
   };
 
   users.push(newUser);
@@ -77,7 +93,10 @@ function createUser({ name, email, password }) {
   return {
     id: newUser.id,
     email: newUser.email,
-    name: newUser.name
+    name: newUser.name,
+    role: newUser.role,
+    created_at: newUser.created_at,
+    updated_at: newUser.updated_at
   };
 }
 
@@ -86,7 +105,28 @@ function createUser({ name, email, password }) {
  * @returns {Array}
  */
 function getAllUsers() {
-  return users.map(({ id, email, name }) => ({ id, email, name }));
+  return users.map(({ id, email, name, role, created_at, updated_at }) => ({
+    id,
+    email,
+    name,
+    role,
+    created_at,
+    updated_at
+  }));
+}
+
+/**
+ * Reset users to initial defaults
+ */
+function resetUsers() {
+  users = JSON.parse(JSON.stringify(DEFAULT_USERS));
+}
+
+/**
+ * Seed users
+ */
+function seedUsers(customUsers = []) {
+  users = JSON.parse(JSON.stringify(customUsers));
 }
 
 module.exports = {
@@ -94,5 +134,7 @@ module.exports = {
   findUserById,
   emailExists,
   createUser,
-  getAllUsers
+  getAllUsers,
+  resetUsers,
+  seedUsers
 };

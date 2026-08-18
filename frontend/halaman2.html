@@ -24,6 +24,10 @@
             --text-main: #0f172a;
             --text-muted: #64748b;
             --border-color: #e2e8f0;
+            --border-focus: #2563eb;
+            --input-bg: #ffffff;
+            --input-border: #cbd5e1;
+            --input-placeholder: #94a3b8;
             --toggle-bg: #ffffff;
             --toggle-border: #cbd5e1;
             --toggle-hover: #f1f5f9;
@@ -35,6 +39,24 @@
             --btn-logout-text: #dc2626;
             --btn-logout-border: #fecaca;
             --btn-logout-hover: #ef4444;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+            --danger-border: #fecaca;
+            --success: #16a34a;
+            --success-bg: #dcfce7;
+            --todo-item-bg: #ffffff;
+            --todo-item-border: #e2e8f0;
+            --todo-item-hover: #f8fafc;
+            --todo-completed-color: #94a3b8;
+            --badge-due-bg: #fef3c7;
+            --badge-due-text: #b45309;
+            --badge-due-border: #fde68a;
+            --badge-due-overdue-bg: #fee2e2;
+            --badge-due-overdue-text: #dc2626;
+            --filter-active-bg: #2563eb;
+            --filter-active-text: #ffffff;
+            --filter-inactive-bg: #f1f5f9;
+            --filter-inactive-text: #64748b;
             --radius-sm: 6px;
             --radius-md: 10px;
             --radius-lg: 16px;
@@ -57,6 +79,10 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #334155;
+            --border-focus: #3b82f6;
+            --input-bg: #0f172a;
+            --input-border: #334155;
+            --input-placeholder: #64748b;
             --toggle-bg: #1e293b;
             --toggle-border: #334155;
             --toggle-hover: #334155;
@@ -68,6 +94,24 @@
             --btn-logout-text: #f87171;
             --btn-logout-border: rgba(239, 68, 68, 0.35);
             --btn-logout-hover: #dc2626;
+            --danger: #f87171;
+            --danger-bg: rgba(239, 68, 68, 0.15);
+            --danger-border: rgba(239, 68, 68, 0.35);
+            --success: #4ade80;
+            --success-bg: rgba(34, 197, 94, 0.15);
+            --todo-item-bg: #0f172a;
+            --todo-item-border: #334155;
+            --todo-item-hover: #1e293b;
+            --todo-completed-color: #64748b;
+            --badge-due-bg: rgba(245, 158, 11, 0.15);
+            --badge-due-text: #fbbf24;
+            --badge-due-border: rgba(245, 158, 11, 0.3);
+            --badge-due-overdue-bg: rgba(239, 68, 68, 0.15);
+            --badge-due-overdue-text: #f87171;
+            --filter-active-bg: #3b82f6;
+            --filter-active-text: #ffffff;
+            --filter-inactive-bg: #0f172a;
+            --filter-inactive-text: #94a3b8;
             --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
         }
 
@@ -81,12 +125,12 @@
         body {
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             min-height: 100vh;
             background-color: var(--bg-page);
             color: var(--text-main);
-            padding: 24px 16px;
+            padding: 40px 16px 60px;
             transition: var(--theme-transition);
         }
 
@@ -122,12 +166,15 @@
 
         .dashboard-container {
             width: 100%;
-            max-width: 480px;
+            max-width: 580px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
         }
 
         .card {
             background-color: var(--card-bg);
-            padding: 36px 32px;
+            padding: 32px 28px;
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-lg);
             border: 1px solid var(--border-color);
@@ -137,7 +184,7 @@
         }
 
         .header-section {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .badge-status {
@@ -151,7 +198,7 @@
             font-weight: 600;
             padding: 5px 12px;
             border-radius: var(--radius-full);
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             letter-spacing: 0.02em;
             transition: var(--theme-transition);
         }
@@ -190,22 +237,22 @@
             background-color: var(--profile-bg);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 24px 20px;
-            margin: 24px 0;
+            padding: 20px 18px;
+            margin: 18px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
             transition: var(--theme-transition);
         }
 
         .avatar {
-            width: 72px;
-            height: 72px;
+            width: 68px;
+            height: 68px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
             color: #ffffff;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -244,7 +291,7 @@
 
         .info-details {
             width: 100%;
-            margin-top: 12px;
+            margin-top: 10px;
             padding-top: 12px;
             border-top: 1px dashed var(--border-color);
             display: grid;
@@ -291,6 +338,568 @@
             color: #facc15;
             background-color: rgba(234, 179, 8, 0.15);
             border-color: rgba(234, 179, 8, 0.35);
+        }
+
+        /* ==========================================================================
+           TODO LIST CARD & SUB-COMPONENTS
+           ========================================================================== */
+        .todo-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px 22px;
+            margin: 24px 0 16px;
+            text-align: left;
+            box-shadow: var(--shadow-sm);
+            transition: var(--theme-transition);
+        }
+
+        .todo-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .todo-header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .todo-icon-wrapper {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            background-color: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .todo-title-heading {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        .todo-subtitle-heading {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .todo-progress-badge {
+            font-size: 12px;
+            font-weight: 600;
+            background-color: var(--badge-bg);
+            color: var(--badge-text);
+            border: 1px solid var(--badge-border);
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            white-space: nowrap;
+        }
+
+        .alert-error {
+            display: none;
+            background-color: var(--danger-bg);
+            color: var(--danger);
+            border: 1px solid var(--danger-border);
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        /* Todo Form & Inputs */
+        .todo-form {
+            margin-bottom: 18px;
+        }
+
+        .form-group-todo {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .todo-input-row {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+            flex-wrap: wrap;
+        }
+
+        .todo-input-field-wrapper {
+            flex: 1 1 200px;
+        }
+
+        .todo-date-field-wrapper {
+            flex: 0 0 140px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 13px;
+            color: var(--text-main);
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-md);
+            outline: none;
+            transition: var(--theme-transition), border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-input::placeholder {
+            color: var(--input-placeholder);
+        }
+
+        .form-input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px var(--primary-focus);
+        }
+
+        .form-input.is-invalid {
+            border-color: var(--danger);
+        }
+
+        .btn-add-todo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background-color: var(--primary);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .btn-add-todo:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-add-todo:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--primary-focus);
+        }
+
+        .btn-add-todo:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .field-error {
+            display: none;
+            color: var(--danger);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        /* Filter Controls */
+        .todo-filter-group {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+            padding: 4px;
+            background-color: var(--filter-inactive-bg);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-btn {
+            flex: 1;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--radius-sm);
+            background-color: transparent;
+            color: var(--filter-inactive-text);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .filter-btn:hover:not(.active) {
+            color: var(--text-main);
+        }
+
+        .filter-btn.active {
+            background-color: var(--filter-active-bg);
+            color: var(--filter-active-text);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .filter-btn:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--primary-focus);
+        }
+
+        /* Todo List and Items */
+        .todo-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0;
+            margin: 0;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            background-color: var(--todo-item-bg);
+            border: 1px solid var(--todo-item-border);
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+        }
+
+        .todo-item:hover {
+            background-color: var(--todo-item-hover);
+            border-color: var(--border-color);
+            transform: translateY(-1px);
+        }
+
+        .todo-left-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .btn-toggle-todo {
+            width: 22px;
+            height: 22px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--input-border);
+            background-color: var(--input-bg);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin-top: 1px;
+            transition: var(--transition);
+        }
+
+        .btn-toggle-todo:hover {
+            border-color: var(--primary);
+        }
+
+        .btn-toggle-todo.is-checked {
+            background-color: var(--success);
+            border-color: var(--success);
+        }
+
+        .btn-toggle-todo svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        .btn-toggle-todo.is-checked svg {
+            opacity: 1;
+        }
+
+        .todo-text-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .todo-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+            line-height: 1.4;
+            word-break: break-word;
+            transition: var(--transition);
+        }
+
+        .todo-item.is-completed .todo-title {
+            text-decoration: line-through;
+            color: var(--todo-completed-color);
+        }
+
+        .todo-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .todo-due-badge {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 7px;
+            border-radius: var(--radius-sm);
+            background-color: var(--badge-due-bg);
+            color: var(--badge-due-text);
+            border: 1px solid var(--badge-due-border);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .todo-due-badge.overdue {
+            background-color: var(--badge-due-overdue-bg);
+            color: var(--badge-due-overdue-text);
+            border-color: var(--danger-border);
+        }
+
+        .btn-delete-todo {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            opacity: 0.6;
+        }
+
+        .btn-delete-todo:hover {
+            opacity: 1;
+            color: var(--danger);
+            background-color: var(--danger-bg);
+        }
+
+        .btn-delete-todo:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--danger);
+        }
+
+        /* Empty State */
+        .empty-state {
+            padding: 32px 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .empty-icon {
+            font-size: 32px;
+            margin-bottom: 4px;
+            opacity: 0.8;
+        }
+
+        .empty-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .empty-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            max-width: 280px;
+            line-height: 1.4;
+        }
+
+        /* Skeleton Loader */
+        .skeleton-loader {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .skeleton-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background-color: var(--todo-item-bg);
+            border: 1px solid var(--todo-item-border);
+            border-radius: var(--radius-md);
+        }
+
+        .skeleton-checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(90deg, var(--border-color) 25%, var(--toggle-hover) 50%, var(--border-color) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-pulse 1.5s infinite;
+        }
+
+        .skeleton-text-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .skeleton-line {
+            height: 12px;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(90deg, var(--border-color) 25%, var(--toggle-hover) 50%, var(--border-color) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-pulse 1.5s infinite;
+        }
+
+        .skeleton-line.full { width: 85%; }
+        .skeleton-line.short { width: 45%; height: 10px; }
+
+        @keyframes skeleton-pulse {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Toast Notifications */
+        .todo-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding: 10px 18px;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        [data-theme="dark"] .todo-toast {
+            background-color: #1e293b;
+            color: #f8fafc;
+            border-color: #334155;
+        }
+
+        .todo-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .todo-toast.toast-error {
+            background-color: var(--danger);
+            color: #ffffff;
+        }
+
+        /* Modal Dialog for Delete Confirmation */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 2000;
+            transition: opacity 0.2s ease;
+        }
+
+        .modal-dialog {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            animation: modal-pop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modal-pop {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon-danger {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn-secondary {
+            padding: 10px 18px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 600;
+            background-color: var(--toggle-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--toggle-hover);
+        }
+
+        .btn-danger {
+            padding: 10px 18px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 600;
+            background-color: var(--danger);
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-danger:hover {
+            background-color: #b91c1c;
         }
 
         /* Actions */
@@ -348,12 +957,27 @@
         }
 
         @media (max-width: 480px) {
+            body {
+                padding: 20px 12px 40px;
+            }
             .card {
-                padding: 28px 20px;
+                padding: 24px 16px;
+            }
+            .todo-card {
+                padding: 18px 14px;
+            }
+            .todo-input-row {
+                flex-direction: column;
+            }
+            .todo-date-field-wrapper {
+                flex: 1 1 100%;
+            }
+            .btn-add-todo {
+                width: 100%;
             }
             .avatar {
-                width: 64px;
-                height: 64px;
+                width: 60px;
+                height: 60px;
                 font-size: 20px;
             }
             .info-details {
@@ -403,6 +1027,117 @@
                 </div>
             </section>
 
+            <!-- TodoListCard Component Container -->
+            <section class="todo-card" id="todoListCard" aria-label="Daftar Tugas Todo">
+                <div class="todo-header">
+                    <div class="todo-header-title">
+                        <div class="todo-icon-wrapper" aria-hidden="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 11l3 3L22 4"></path>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="todo-title-heading">Daftar Tugas Saya</h2>
+                            <p class="todo-subtitle-heading">Kelola dan selesaikan target harian Anda</p>
+                        </div>
+                    </div>
+                    <span id="todoProgressBadge" class="todo-progress-badge">
+                        <span id="completedCountBadge">0</span>/<span id="totalCountBadge">0</span> Selesai
+                    </span>
+                </div>
+
+                <!-- Todo Alert Message for Errors -->
+                <div id="todoAlertMessage" class="alert-error" role="alert"></div>
+
+                <!-- TodoInputForm -->
+                <form id="todoInputForm" class="todo-form" novalidate>
+                    <div class="form-group-todo">
+                        <div class="todo-input-row">
+                            <div class="todo-input-field-wrapper">
+                                <input 
+                                    type="text" 
+                                    id="todoTitleInput" 
+                                    name="title" 
+                                    class="form-input" 
+                                    placeholder="Tambahkan tugas baru..." 
+                                    maxlength="255" 
+                                    required 
+                                    autocomplete="off" 
+                                    aria-label="Judul tugas baru"
+                                >
+                            </div>
+                            <div class="todo-date-field-wrapper">
+                                <input 
+                                    type="date" 
+                                    id="todoDueDateInput" 
+                                    name="dueDate" 
+                                    class="form-input" 
+                                    title="Batas waktu (opsional)" 
+                                    aria-label="Tanggal jatuh tempo"
+                                >
+                            </div>
+                            <button type="submit" id="addTodoBtn" class="btn-add-todo" aria-label="Tambah tugas">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                <span>Tambah</span>
+                            </button>
+                        </div>
+                        <span id="todoTitleError" class="field-error">Judul tugas wajib diisi (minimal 3 karakter).</span>
+                        <span id="todoDueDateError" class="field-error">Tanggal jatuh tempo tidak boleh lebih lampau dari hari ini.</span>
+                    </div>
+                </form>
+
+                <!-- TodoFilter -->
+                <div class="todo-filter-group" id="todoFilterGroup" role="tablist" aria-label="Filter status tugas">
+                    <button type="button" class="filter-btn active" data-filter="all" id="filterAll" role="tab" aria-selected="true">
+                        Semua (<span id="countAll">0</span>)
+                    </button>
+                    <button type="button" class="filter-btn" data-filter="active" id="filterActive" role="tab" aria-selected="false">
+                        Belum Selesai (<span id="countActive">0</span>)
+                    </button>
+                    <button type="button" class="filter-btn" data-filter="completed" id="filterCompleted" role="tab" aria-selected="false">
+                        Selesai (<span id="countCompleted">0</span>)
+                    </button>
+                </div>
+
+                <!-- SkeletonLoader -->
+                <div id="todoSkeletonLoader" class="skeleton-loader" style="display: none;" aria-hidden="true">
+                    <div class="skeleton-item">
+                        <div class="skeleton-checkbox"></div>
+                        <div class="skeleton-text-group">
+                            <div class="skeleton-line full"></div>
+                            <div class="skeleton-line short"></div>
+                        </div>
+                    </div>
+                    <div class="skeleton-item">
+                        <div class="skeleton-checkbox"></div>
+                        <div class="skeleton-text-group">
+                            <div class="skeleton-line full"></div>
+                            <div class="skeleton-line short"></div>
+                        </div>
+                    </div>
+                    <div class="skeleton-item">
+                        <div class="skeleton-checkbox"></div>
+                        <div class="skeleton-text-group">
+                            <div class="skeleton-line full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TodoList Items Container -->
+                <ul id="todoList" class="todo-list" role="list" aria-label="Daftar item tugas"></ul>
+
+                <!-- EmptyState -->
+                <div id="todoEmptyState" class="empty-state" style="display: none;">
+                    <div class="empty-icon" aria-hidden="true">📋</div>
+                    <h3 class="empty-title">Belum Ada Tugas</h3>
+                    <p class="empty-desc" id="emptyStateDesc">Tambahkan tugas baru untuk mulai mengorganisir aktivitas harian Anda.</p>
+                </div>
+            </section>
+
             <!-- Actions -->
             <div class="actions">
                 <button type="button" class="btn-logout" id="logoutBtn" aria-label="Keluar dari akun">
@@ -421,8 +1156,26 @@
         </main>
     </div>
 
+    <!-- Toast Notification Element -->
+    <div id="todoToast" class="todo-toast" role="status" aria-live="polite"></div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+        <div class="modal-dialog">
+            <div class="modal-icon-danger">🗑️</div>
+            <h3 id="deleteModalTitle" class="modal-title">Hapus Tugas?</h3>
+            <p class="modal-desc" id="deleteModalDesc">Apakah Anda yakin ingin menghapus tugas ini? Tindakan ini tidak dapat dibatalkan.</p>
+            <div class="modal-actions">
+                <button type="button" id="cancelDeleteBtn" class="btn-secondary">Batal</button>
+                <button type="button" id="confirmDeleteBtn" class="btn-danger">Hapus</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Theme Toggle Logic
+        // ==========================================================================
+        // 1. Theme Toggle Logic
+        // ==========================================================================
         const themeToggleBtn = document.getElementById("themeToggle");
         function updateThemeUI(theme) {
             if (themeToggleBtn) {
@@ -445,7 +1198,9 @@
             });
         }
 
-        // Helper to extract clean initials from full name or email
+        // ==========================================================================
+        // 2. User Data and Session Reading
+        // ==========================================================================
         function getInitials(name, email) {
             if (name && typeof name === "string" && name.trim()) {
                 const parts = name.trim().split(/\s+/);
@@ -465,7 +1220,6 @@
             return "U";
         }
 
-        // User Data and Session Reading
         const userEmail = sessionStorage.getItem("userEmail");
         const userName = sessionStorage.getItem("userName");
         const authToken = sessionStorage.getItem("authToken");
@@ -486,7 +1240,6 @@
             }
         }
 
-        // Determine friendly display values
         let displayUserName = "Pengguna";
         let displayUserEmail = "Pengguna Tamu";
 
@@ -494,7 +1247,6 @@
             displayUserName = userName.trim();
         } else if (userEmail && userEmail.trim()) {
             const namePrefix = userEmail.split("@")[0];
-            // Format camel/dot/underscore into clean name if available
             displayUserName = namePrefix.charAt(0).toUpperCase() + namePrefix.slice(1);
         }
 
@@ -526,6 +1278,556 @@
                 window.location.href = "index.html";
             });
         }
+
+        // ==========================================================================
+        // 3. API SERVICE LAYER & CLIENT-SIDE VALIDATION
+        // ==========================================================================
+        const TODO_API_BASE_URL = "http://localhost:5000/api/v1/todos";
+        const TODO_API_FALLBACK_URL = "http://localhost:5000/api/todos";
+
+        function getAuthHeaders() {
+            const token = sessionStorage.getItem("authToken");
+            const headers = {
+                "Content-Type": "application/json"
+            };
+            if (token) {
+                headers["Authorization"] = `Bearer ${token}`;
+            }
+            return headers;
+        }
+
+        function validateTodoInput(title, dueDateStr) {
+            const errors = {};
+            const trimmedTitle = (title || "").trim();
+
+            if (!trimmedTitle) {
+                errors.title = "Judul tugas wajib diisi.";
+            } else if (trimmedTitle.length < 3) {
+                errors.title = "Judul tugas minimal 3 karakter.";
+            } else if (trimmedTitle.length > 255) {
+                errors.title = "Judul tugas maksimal 255 karakter.";
+            }
+
+            if (dueDateStr) {
+                const parsed = new Date(dueDateStr);
+                const todayIso = new Date().toISOString().slice(0, 10);
+                const todayLocal = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+                const minAllowed = todayIso < todayLocal ? todayIso : todayLocal;
+                if (isNaN(parsed.getTime()) || dueDateStr < minAllowed) {
+                    errors.dueDate = "Tanggal jatuh tempo tidak boleh lebih lampau dari hari ini.";
+                }
+            }
+
+            return {
+                isValid: Object.keys(errors).length === 0,
+                trimmedTitle,
+                dueDateStr: dueDateStr || null,
+                errors
+            };
+        }
+
+        // ==========================================================================
+        // 4. TODO STATE STORE & MANAGEMENT
+        // ==========================================================================
+        const todoStore = {
+            todos: [],
+            filter: "all", // 'all' | 'active' | 'completed'
+            isLoading: false,
+            pendingDeleteId: null,
+
+            get filteredTodos() {
+                if (this.filter === "active") {
+                    return this.todos.filter(t => !t.is_completed);
+                }
+                if (this.filter === "completed") {
+                    return this.todos.filter(t => t.is_completed);
+                }
+                return this.todos;
+            },
+
+            get counts() {
+                const all = this.todos.length;
+                const completed = this.todos.filter(t => t.is_completed).length;
+                const active = all - completed;
+                return { all, active, completed };
+            }
+        };
+
+        // UI Element References
+        const todoForm = document.getElementById("todoInputForm");
+        const todoTitleInput = document.getElementById("todoTitleInput");
+        const todoDueDateInput = document.getElementById("todoDueDateInput");
+        const addTodoBtn = document.getElementById("addTodoBtn");
+        const todoTitleError = document.getElementById("todoTitleError");
+        const todoDueDateError = document.getElementById("todoDueDateError");
+        const todoAlertMessage = document.getElementById("todoAlertMessage");
+        const todoSkeletonLoader = document.getElementById("todoSkeletonLoader");
+        const todoListEl = document.getElementById("todoList");
+        const todoEmptyState = document.getElementById("todoEmptyState");
+        const emptyStateDesc = document.getElementById("emptyStateDesc");
+        const todoToastEl = document.getElementById("todoToast");
+        const countAllEl = document.getElementById("countAll");
+        const countActiveEl = document.getElementById("countActive");
+        const countCompletedEl = document.getElementById("countCompleted");
+        const totalCountBadge = document.getElementById("totalCountBadge");
+        const completedCountBadge = document.getElementById("completedCountBadge");
+        const filterButtons = document.querySelectorAll(".filter-btn");
+
+        // Modal Elements
+        const deleteConfirmModal = document.getElementById("deleteConfirmModal");
+        const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+        const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+
+        // Feedback Helpers
+        let toastTimeout = null;
+        function showToast(message, isError = false) {
+            if (!todoToastEl) return;
+            todoToastEl.textContent = message;
+            todoToastEl.className = isError ? "todo-toast show toast-error" : "todo-toast show";
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                todoToastEl.className = "todo-toast";
+            }, 3000);
+        }
+
+        function showTodoAlert(message) {
+            if (!todoAlertMessage) return;
+            todoAlertMessage.textContent = message;
+            todoAlertMessage.style.display = "block";
+        }
+
+        function clearTodoAlert() {
+            if (!todoAlertMessage) return;
+            todoAlertMessage.textContent = "";
+            todoAlertMessage.style.display = "none";
+        }
+
+        function formatDateDisplay(dateString) {
+            if (!dateString) return "";
+            try {
+                const d = new Date(dateString);
+                if (isNaN(d.getTime())) return dateString;
+                return d.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+            } catch (e) {
+                return dateString;
+            }
+        }
+
+        function isDateOverdue(dateString) {
+            if (!dateString) return false;
+            try {
+                const d = new Date(dateString + "T23:59:59");
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                return d < today;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // ==========================================================================
+        // 5. RENDER TODO UI
+        // ==========================================================================
+        function renderTodoUI() {
+            // Update counter badges
+            const counts = todoStore.counts;
+            if (countAllEl) countAllEl.textContent = counts.all;
+            if (countActiveEl) countActiveEl.textContent = counts.active;
+            if (countCompletedEl) countCompletedEl.textContent = counts.completed;
+            if (totalCountBadge) totalCountBadge.textContent = counts.all;
+            if (completedCountBadge) completedCountBadge.textContent = counts.completed;
+
+            // Render list or empty state
+            const items = todoStore.filteredTodos;
+            if (todoListEl) {
+                todoListEl.innerHTML = "";
+            }
+
+            if (items.length === 0) {
+                if (todoEmptyState) {
+                    todoEmptyState.style.display = "flex";
+                    if (emptyStateDesc) {
+                        if (todoStore.filter === "active" && counts.all > 0) {
+                            emptyStateDesc.textContent = "Semua tugas sudah selesai. Kerja yang luar biasa! 🎉";
+                        } else if (todoStore.filter === "completed" && counts.all > 0) {
+                            emptyStateDesc.textContent = "Belum ada tugas yang diselesaikan.";
+                        } else {
+                            emptyStateDesc.textContent = "Tambahkan tugas baru untuk mulai mengorganisir aktivitas harian Anda.";
+                        }
+                    }
+                }
+            } else {
+                if (todoEmptyState) {
+                    todoEmptyState.style.display = "none";
+                }
+
+                items.forEach(todo => {
+                    const li = document.createElement("li");
+                    li.className = `todo-item ${todo.is_completed ? "is-completed" : ""}`;
+                    li.setAttribute("data-id", String(todo.id));
+                    li.setAttribute("role", "listitem");
+
+                    // Left Content Wrapper
+                    const leftContent = document.createElement("div");
+                    leftContent.className = "todo-left-content";
+
+                    // Checkbox Toggle Button
+                    const toggleBtn = document.createElement("button");
+                    toggleBtn.type = "button";
+                    toggleBtn.className = `btn-toggle-todo ${todo.is_completed ? "is-checked" : ""}`;
+                    toggleBtn.setAttribute("aria-label", todo.is_completed ? "Tandai tugas belum selesai" : "Tandai tugas selesai");
+                    toggleBtn.setAttribute("title", todo.is_completed ? "Batal selesai" : "Tandai selesai");
+
+                    // SVG Checkmark Icon
+                    toggleBtn.innerHTML = `
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    `;
+
+                    toggleBtn.addEventListener("click", () => {
+                        handleToggleTodo(todo.id);
+                    });
+
+                    // Text & Meta Container
+                    const textGroup = document.createElement("div");
+                    textGroup.className = "todo-text-group";
+
+                    const titleSpan = document.createElement("span");
+                    titleSpan.className = "todo-title";
+                    titleSpan.textContent = todo.title; // XSS Safe!
+
+                    textGroup.appendChild(titleSpan);
+
+                    if (todo.due_date) {
+                        const metaDiv = document.createElement("div");
+                        metaDiv.className = "todo-meta";
+
+                        const dueBadge = document.createElement("span");
+                        const overdue = !todo.is_completed && isDateOverdue(todo.due_date);
+                        dueBadge.className = `todo-due-badge ${overdue ? "overdue" : ""}`;
+                        dueBadge.textContent = `${overdue ? "⚠️ Lewat: " : "📅 "}${formatDateDisplay(todo.due_date)}`;
+
+                        metaDiv.appendChild(dueBadge);
+                        textGroup.appendChild(metaDiv);
+                    }
+
+                    leftContent.appendChild(toggleBtn);
+                    leftContent.appendChild(textGroup);
+
+                    // Delete Button
+                    const deleteBtn = document.createElement("button");
+                    deleteBtn.type = "button";
+                    deleteBtn.className = "btn-delete-todo";
+                    deleteBtn.setAttribute("aria-label", `Hapus tugas: ${todo.title}`);
+                    deleteBtn.setAttribute("title", "Hapus tugas");
+                    deleteBtn.innerHTML = `
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    `;
+
+                    deleteBtn.addEventListener("click", () => {
+                        openDeleteModal(todo.id, todo.title);
+                    });
+
+                    li.appendChild(leftContent);
+                    li.appendChild(deleteBtn);
+                    todoListEl.appendChild(li);
+                });
+            }
+        }
+
+        // ==========================================================================
+        // 6. API FETCH & CRUD OPERATIONS WITH OPTIMISTIC UPDATES
+        // ==========================================================================
+        async function fetchTodosFromAPI() {
+            if (todoSkeletonLoader) todoSkeletonLoader.style.display = "flex";
+            if (todoListEl) todoListEl.style.display = "none";
+            if (todoEmptyState) todoEmptyState.style.display = "none";
+            clearTodoAlert();
+
+            try {
+                let res;
+                try {
+                    res = await fetch(TODO_API_BASE_URL, {
+                        method: "GET",
+                        headers: getAuthHeaders()
+                    });
+                } catch (err) {
+                    res = await fetch(TODO_API_FALLBACK_URL, {
+                        method: "GET",
+                        headers: getAuthHeaders()
+                    });
+                }
+
+                if (res.ok) {
+                    const json = await res.json();
+                    todoStore.todos = Array.isArray(json.data) ? json.data : (Array.isArray(json) ? json : []);
+                } else if (res.status === 401) {
+                    // Unauthorized
+                    todoStore.todos = [];
+                }
+            } catch (networkError) {
+                // Fallback to local session storage cache if server not responding
+                const localSaved = sessionStorage.getItem("local_todos");
+                if (localSaved) {
+                    try {
+                        todoStore.todos = JSON.parse(localSaved);
+                    } catch (e) {
+                        todoStore.todos = [];
+                    }
+                }
+            } finally {
+                if (todoSkeletonLoader) todoSkeletonLoader.style.display = "none";
+                if (todoListEl) todoListEl.style.display = "flex";
+                renderTodoUI();
+            }
+        }
+
+        // Input Real-Time Validation
+        if (todoTitleInput) {
+            todoTitleInput.addEventListener("input", () => {
+                todoTitleInput.classList.remove("is-invalid");
+                if (todoTitleError) todoTitleError.style.display = "none";
+                clearTodoAlert();
+            });
+        }
+
+        if (todoDueDateInput) {
+            todoDueDateInput.addEventListener("input", () => {
+                todoDueDateInput.classList.remove("is-invalid");
+                if (todoDueDateError) todoDueDateError.style.display = "none";
+                clearTodoAlert();
+            });
+        }
+
+        // Add Todo Form Submit
+        if (todoForm) {
+            todoForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                clearTodoAlert();
+
+                const titleVal = todoTitleInput.value;
+                const dueDateVal = todoDueDateInput.value;
+
+                const validation = validateTodoInput(titleVal, dueDateVal);
+
+                if (!validation.isValid) {
+                    if (validation.errors.title) {
+                        todoTitleInput.classList.add("is-invalid");
+                        if (todoTitleError) {
+                            todoTitleError.textContent = validation.errors.title;
+                            todoTitleError.style.display = "block";
+                        }
+                    }
+                    if (validation.errors.dueDate) {
+                        todoDueDateInput.classList.add("is-invalid");
+                        if (todoDueDateError) {
+                            todoDueDateError.textContent = validation.errors.dueDate;
+                            todoDueDateError.style.display = "block";
+                        }
+                    }
+                    return;
+                }
+
+                addTodoBtn.disabled = true;
+                const originalBtnContent = addTodoBtn.innerHTML;
+                addTodoBtn.innerHTML = `<span>Menambahkan...</span>`;
+
+                const payload = {
+                    title: validation.trimmedTitle,
+                    due_date: validation.dueDateStr
+                };
+
+                try {
+                    let res;
+                    try {
+                        res = await fetch(TODO_API_BASE_URL, {
+                            method: "POST",
+                            headers: getAuthHeaders(),
+                            body: JSON.stringify(payload)
+                        });
+                    } catch (netErr) {
+                        res = await fetch(TODO_API_FALLBACK_URL, {
+                            method: "POST",
+                            headers: getAuthHeaders(),
+                            body: JSON.stringify(payload)
+                        });
+                    }
+
+                    if (res.ok) {
+                        const json = await res.json();
+                        const newTodo = json.data || {
+                            id: json.id || Date.now(),
+                            title: validation.trimmedTitle,
+                            due_date: validation.dueDateStr,
+                            is_completed: false,
+                            created_at: new Date().toISOString()
+                        };
+                        todoStore.todos.unshift(newTodo);
+                        todoTitleInput.value = "";
+                        todoDueDateInput.value = "";
+                        showToast("Tugas baru berhasil ditambahkan! 🎯");
+                        renderTodoUI();
+                    } else {
+                        const errJson = await res.json().catch(() => ({}));
+                        showTodoAlert(errJson.message || "Gagal menambahkan tugas ke server.");
+                    }
+                } catch (e) {
+                    // Local fallback creation
+                    const localTodo = {
+                        id: "local-" + Date.now(),
+                        title: validation.trimmedTitle,
+                        due_date: validation.dueDateStr,
+                        is_completed: false,
+                        created_at: new Date().toISOString()
+                    };
+                    todoStore.todos.unshift(localTodo);
+                    sessionStorage.setItem("local_todos", JSON.stringify(todoStore.todos));
+                    todoTitleInput.value = "";
+                    todoDueDateInput.value = "";
+                    showToast("Tugas ditambahkan (Mode Lokal)");
+                    renderTodoUI();
+                } finally {
+                    addTodoBtn.disabled = false;
+                    addTodoBtn.innerHTML = originalBtnContent;
+                }
+            });
+        }
+
+        // Optimistic Toggle Todo
+        async function handleToggleTodo(id) {
+            const targetTodo = todoStore.todos.find(t => String(t.id) === String(id));
+            if (!targetTodo) return;
+
+            const previousState = targetTodo.is_completed;
+            const newState = !previousState;
+
+            // OPTIMISTIC UPDATE: Apply state change immediately to UI
+            targetTodo.is_completed = newState;
+            renderTodoUI();
+            showToast(newState ? "Tugas ditandai selesai! 🎉" : "Tugas diaktifkan kembali");
+
+            try {
+                let res;
+                const endpoint = `${TODO_API_BASE_URL}/${id}`;
+                const fallbackEndpoint = `${TODO_API_FALLBACK_URL}/${id}`;
+
+                try {
+                    res = await fetch(endpoint, {
+                        method: "PATCH",
+                        headers: getAuthHeaders(),
+                        body: JSON.stringify({ is_completed: newState })
+                    });
+                } catch (netErr) {
+                    res = await fetch(fallbackEndpoint, {
+                        method: "PATCH",
+                        headers: getAuthHeaders(),
+                        body: JSON.stringify({ is_completed: newState })
+                    });
+                }
+
+                if (!res.ok) {
+                    throw new Error("Respon server gagal.");
+                }
+            } catch (err) {
+                // ROLLBACK on failure
+                targetTodo.is_completed = previousState;
+                renderTodoUI();
+                showToast("Gagal memperbarui status. Perubahan dibatalkan.", true);
+            }
+        }
+
+        // Delete Modal Handlers
+        function openDeleteModal(id, title) {
+            todoStore.pendingDeleteId = id;
+            if (deleteConfirmModal) {
+                deleteConfirmModal.style.display = "flex";
+            }
+        }
+
+        function closeDeleteModal() {
+            todoStore.pendingDeleteId = null;
+            if (deleteConfirmModal) {
+                deleteConfirmModal.style.display = "none";
+            }
+        }
+
+        if (cancelDeleteBtn) {
+            cancelDeleteBtn.addEventListener("click", closeDeleteModal);
+        }
+
+        if (deleteConfirmModal) {
+            deleteConfirmModal.addEventListener("click", (e) => {
+                if (e.target === deleteConfirmModal) {
+                    closeDeleteModal();
+                }
+            });
+        }
+
+        // Optimistic Delete Todo
+        if (confirmDeleteBtn) {
+            confirmDeleteBtn.addEventListener("click", async () => {
+                const id = todoStore.pendingDeleteId;
+                closeDeleteModal();
+                if (!id) return;
+
+                const index = todoStore.todos.findIndex(t => String(t.id) === String(id));
+                if (index === -1) return;
+
+                const [deletedTodo] = todoStore.todos.splice(index, 1);
+
+                // OPTIMISTIC UPDATE: Item removed immediately
+                renderTodoUI();
+                showToast("Tugas berhasil dihapus.");
+
+                try {
+                    let res;
+                    const endpoint = `${TODO_API_BASE_URL}/${id}`;
+                    const fallbackEndpoint = `${TODO_API_FALLBACK_URL}/${id}`;
+
+                    try {
+                        res = await fetch(endpoint, {
+                            method: "DELETE",
+                            headers: getAuthHeaders()
+                        });
+                    } catch (netErr) {
+                        res = await fetch(fallbackEndpoint, {
+                            method: "DELETE",
+                            headers: getAuthHeaders()
+                        });
+                    }
+
+                    if (!res.ok) {
+                        throw new Error("Gagal menghapus tugas dari server.");
+                    }
+                } catch (err) {
+                    // ROLLBACK on failure: Restore item
+                    todoStore.todos.splice(index, 0, deletedTodo);
+                    renderTodoUI();
+                    showToast("Gagal menghapus tugas di server. Data dikembalikan.", true);
+                }
+            });
+        }
+
+        // Filter Buttons Switcher
+        filterButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                filterButtons.forEach(b => {
+                    b.classList.remove("active");
+                    b.setAttribute("aria-selected", "false");
+                });
+                btn.classList.add("active");
+                btn.setAttribute("aria-selected", "true");
+                todoStore.filter = btn.getAttribute("data-filter") || "all";
+                renderTodoUI();
+            });
+        });
+
+        // Initialize Fetch on Page Load
+        fetchTodosFromAPI();
     </script>
 </body>
 </html>

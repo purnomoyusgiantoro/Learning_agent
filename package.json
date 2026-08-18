@@ -1,0 +1,23 @@
+{
+  "name": "learning-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Multi-Agent AI Orchestrator & Web Application with Full E2E Test Suite",
+  "scripts": {
+    "test": "node --test tests/**/*.test.js backend/tests/**/*.test.js",
+    "test:backend": "npm --prefix backend test",
+    "test:frontend": "npm --prefix frontend test",
+    "test:coverage": "node --test --experimental-test-coverage backend/tests/**/*.test.js",
+    "lint": "npm --prefix backend run lint && npm --prefix frontend run lint",
+    "build": "npm --prefix backend run build && npm --prefix frontend run build",
+    "audit": "npm --prefix backend audit"
+  },
+  "keywords": [
+    "multi-agent",
+    "learning-agent",
+    "orchestrator",
+    "e2e-testing"
+  ],
+  "author": "",
+  "license": "ISC"
+}

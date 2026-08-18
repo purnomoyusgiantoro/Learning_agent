@@ -2,7 +2,8 @@ import subprocess
 from pathlib import Path
 import sys
 import re
-import shutil
+import time
+import threading
 
 # Configure UTF-8 encoding for standard output on Windows
 if sys.stdout and hasattr(sys.stdout, 'reconfigure'):
@@ -20,72 +21,9 @@ for directory in [TODO_DIR, DOING_DIR, DONE_DIR]:
     directory.mkdir(parents=True, exist_ok=True)
 
 
-def run_agy(agent, prompt):
-    print(f"\n🤖 Menjalankan {agent}...")
-
-    command = [
-        "agy",
-        "--agent", agent,
-        "--print", prompt,
-        "--output-format", "text",
-    ]
-
-    result = subprocess.run(
-        command,
-        cwd=PROJECT,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-    )
-
-    if result.returncode != 0:
-        print(f"❌ {agent} gagal")
-        if result.stderr:
-            print(result.stderr)
-        return ""
-
-    return result.stdout
-
-
-def create_lead_plan(requirement):
-    prompt = f"""
-Anda adalah LEAD SOFTWARE ENGINEER & ORCHESTRATOR.
-
-Project:
-Learning Agent
-
-Requirement dari user:
-{requirement}
-
-Analisis requirement tersebut dan buat rencana implementasi terstruktur untuk FE, BE, dan QA.
-
-PENTING:
-- Jangan mengubah source code.
-- Output hanya rencana pekerjaan.
-- Tentukan dependency antara FE dan BE.
-- Tentukan acceptance criteria.
-
-Gunakan format wajib:
-
-## FRONTEND
-- [Daftar tugas spesifik untuk UI, form, validasi client, dan integrasi API]
-
-## BACKEND
-- [Daftar endpoint, middleware, routing, data model, dan validasi server]
-
-## QA
-- [Daftar skenario testing fungsional, integrasi, negative test, dan security]
-
-## DEPENDENCY
-- [Urutan ketergantungan antar task]
-
-## ACCEPTANCE CRITERIA
-- [Kriteria selesai untuk seluruh sistem]
-"""
-    return run_agy("code-reviewer", prompt)
-
-
+# ============================================================
+#  Parser: Pecah PLAN.md menjadi file tugas per role
+# ============================================================
 def parse_plan_section(plan_text, section_title):
     pattern = rf"##\s+{section_title}\s*\n([\s\S]*?)(?=\n##\s+|$)"
     match = re.search(pattern, plan_text, re.IGNORECASE)
@@ -95,7 +33,7 @@ def parse_plan_section(plan_text, section_title):
 
 
 def parse_and_create_tasks(plan_text, requirement):
-    print("\n📂 Memecah PLAN.md menjadi file task terpisah di tasks/todo/...")
+    print("\n📂 [WATCHER] Memecah PLAN.md → tasks/todo/...")
 
     fe_content = parse_plan_section(plan_text, "FRONTEND")
     be_content = parse_plan_section(plan_text, "BACKEND")
@@ -105,7 +43,7 @@ def parse_and_create_tasks(plan_text, requirement):
 
     # 1. BE Task
     be_task_file = TODO_DIR / "BE_Task.md"
-    be_task_body = f"""# Task: BE-TASK - Backend Implementation
+    be_task_file.write_text(f"""# Task: BE-TASK - Backend Implementation
 
 - **ID:** BE-TASK-01
 - **Agent:** BE Agent
@@ -120,7 +58,7 @@ Mengimplementasikan backend API, database layer, dan validasi server sesuai requ
 
 ---
 
-## 2. Pekerjaan yang Harus Dilakukan (Dari LEAD PLAN)
+## 2. Pekerjaan (Dari LEAD PLAN)
 {be_content}
 
 ---
@@ -132,13 +70,12 @@ Mengimplementasikan backend API, database layer, dan validasi server sesuai requ
 
 ## 4. Acceptance Criteria
 {acc_content}
-"""
-    be_task_file.write_text(be_task_body, encoding="utf-8")
-    print(f"  ✅ BE Task: {be_task_file.relative_to(PROJECT)}")
+""", encoding="utf-8")
+    print(f"  ✅ BE_Task.md")
 
     # 2. FE Task
     fe_task_file = TODO_DIR / "FE_Task.md"
-    fe_task_body = f"""# Task: FE-TASK - Frontend Implementation
+    fe_task_file.write_text(f"""# Task: FE-TASK - Frontend Implementation
 
 - **ID:** FE-TASK-01
 - **Agent:** FE Agent
@@ -149,11 +86,11 @@ Mengimplementasikan backend API, database layer, dan validasi server sesuai requ
 ---
 
 ## 1. Tujuan
-Mengimplementasikan antarmuka pengguna (UI), interaktivitas form, validasi client, dan integrasi API sesuai requirement: {requirement}.
+Mengimplementasikan UI, validasi client, dan integrasi API sesuai requirement: {requirement}.
 
 ---
 
-## 2. Pekerjaan yang Harus Dilakukan (Dari LEAD PLAN)
+## 2. Pekerjaan (Dari LEAD PLAN)
 {fe_content}
 
 ---
@@ -165,13 +102,12 @@ Mengimplementasikan antarmuka pengguna (UI), interaktivitas form, validasi clien
 
 ## 4. Acceptance Criteria
 {acc_content}
-"""
-    fe_task_file.write_text(fe_task_body, encoding="utf-8")
-    print(f"  ✅ FE Task: {fe_task_file.relative_to(PROJECT)}")
+""", encoding="utf-8")
+    print(f"  ✅ FE_Task.md")
 
     # 3. QA Task
     qa_task_file = TODO_DIR / "QA_Task.md"
-    qa_task_body = f"""# Task: QA-TASK - Quality Assurance & E2E Testing
+    qa_task_file.write_text(f"""# Task: QA-TASK - Quality Assurance & E2E Testing
 
 - **ID:** QA-TASK-01
 - **Agent:** QA Agent
@@ -182,11 +118,11 @@ Mengimplementasikan antarmuka pengguna (UI), interaktivitas form, validasi clien
 ---
 
 ## 1. Tujuan
-Melakukan pengujian menyeluruh (API, UI, validasi, dan End-to-End flow) untuk memvalidasi implementasi requirement: {requirement}.
+Melakukan pengujian menyeluruh untuk memvalidasi implementasi requirement: {requirement}.
 
 ---
 
-## 2. Skenario Pengujian yang Harus Dilakukan (Dari LEAD PLAN)
+## 2. Skenario Pengujian (Dari LEAD PLAN)
 {qa_content}
 
 ---
@@ -198,16 +134,43 @@ Melakukan pengujian menyeluruh (API, UI, validasi, dan End-to-End flow) untuk me
 
 ## 4. Acceptance Criteria & Sign-Off
 {acc_content}
-"""
-    qa_task_file.write_text(qa_task_body, encoding="utf-8")
-    print(f"  ✅ QA Task: {qa_task_file.relative_to(PROJECT)}")
+""", encoding="utf-8")
+    print(f"  ✅ QA_Task.md")
 
-    return be_task_file, fe_task_file, qa_task_file
+    print("📂 [WATCHER] ✅ Semua tugas sudah dikirim ke workers!\n")
 
 
+# ============================================================
+#  Watcher: Pantau PLAN.md — otomatis pecah saat berubah
+# ============================================================
+def watch_plan_file(requirement):
+    plan_file = TASK_DIR / "PLAN.md"
+    last_mtime = 0
+
+    # Catat waktu modifikasi terakhir agar tidak trigger ulang untuk file lama
+    if plan_file.exists():
+        last_mtime = plan_file.stat().st_mtime
+
+    while True:
+        time.sleep(2)
+        try:
+            if plan_file.exists():
+                current_mtime = plan_file.stat().st_mtime
+                if current_mtime > last_mtime:
+                    last_mtime = current_mtime
+                    print("\n\n👁️  [WATCHER] PLAN.md berubah! Mendistribusikan tugas...")
+                    plan_text = plan_file.read_text(encoding="utf-8")
+                    parse_and_create_tasks(plan_text, requirement)
+        except Exception as e:
+            print(f"\n[WATCHER] ❌ Error: {e}")
+
+
+# ============================================================
+#  MAIN — Cukup 1 terminal. Semuanya otomatis.
+# ============================================================
 def main():
     print("========================================")
-    print("       LEARNING AGENT AI ORCHESTRATOR   ")
+    print("   LEARNING AGENT AI ORCHESTRATOR")
     print("========================================")
 
     if len(sys.argv) < 2:
@@ -218,29 +181,89 @@ def main():
 
     requirement = " ".join(sys.argv[1:])
 
-    print("\n📋 REQUIREMENT:")
-    print(requirement)
+    print(f"\n📋 REQUIREMENT: {requirement}")
 
-    print("\n🧠 LEAD AGENT sedang menganalisis dan menyusun PLAN.md...")
-    plan = create_lead_plan(requirement)
+    # --------------------------------------------------
+    #  1. Jalankan 3 Workers otomatis di belakang layar
+    # --------------------------------------------------
+    worker_script = Path(__file__).parent / "worker.py"
+    worker_procs = []
 
-    if not plan:
-        print("❌ Lead gagal membuat rencana.")
-        return
+    for role in ["BE", "FE", "QA"]:
+        proc = subprocess.Popen(
+            [sys.executable, str(worker_script), role],
+            cwd=str(PROJECT),
+            creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+        )
+        worker_procs.append(proc)
+        print(f"  🤖 Worker {role} aktif (PID: {proc.pid})")
 
-    plan_file = TASK_DIR / "PLAN.md"
-    plan_file.write_text(plan, encoding="utf-8")
-    print(f"✅ PLAN.md disimpan di: {plan_file.relative_to(PROJECT)}")
+    print("✅ Semua workers berjalan di belakang layar!\n")
 
-    # 1. Parse PLAN dan buat task terpisah di tasks/todo/
-    be_task, fe_task, qa_task = parse_and_create_tasks(plan, requirement)
+    # --------------------------------------------------
+    #  2. Jalankan Watcher (pantau PLAN.md)
+    # --------------------------------------------------
+    print("👁️  [WATCHER] Aktif — memantau tasks/PLAN.md...")
+    watcher = threading.Thread(target=watch_plan_file, args=(requirement,), daemon=True)
+    watcher.start()
 
-    # 2. Pendelegasian
-    print("\n========================================")
-    print("🎉 TUGAS TELAH DIBUAT DI FOLDER tasks/todo/")
-    print("🤖 WORKERS ANDA (FE, BE, QA) AKAN OTOMATIS MENGERJAKANNYA!")
-    print("========================================")
+    # --------------------------------------------------
+    #  3. Langsung buka chat interaktif dengan Lead Agent
+    # --------------------------------------------------
+    print("💬 Membuka sesi chat dengan Lead Agent...\n")
+
+    lead_prompt = f"""Anda adalah LEAD SOFTWARE ENGINEER & ORCHESTRATOR untuk project Learning Agent.
+
+REQUIREMENT DARI USER:
+{requirement}
+
+TUGAS ANDA:
+1. Analisis requirement di atas.
+2. Buat rencana implementasi terstruktur.
+3. SIMPAN rencana tersebut ke file tasks/PLAN.md menggunakan tools Anda.
+
+FORMAT WAJIB untuk isi PLAN.md:
+
+## FRONTEND
+- [Daftar tugas FE]
+
+## BACKEND
+- [Daftar tugas BE]
+
+## QA
+- [Daftar skenario testing]
+
+## DEPENDENCY
+- [Urutan ketergantungan]
+
+## ACCEPTANCE CRITERIA
+- [Kriteria selesai]
+
+PENTING:
+- Anda HARUS menulis/menyimpan rencana ke file tasks/PLAN.md menggunakan write tools Anda.
+- Setelah menyimpan, sistem otomatis akan mendistribusikan tugas ke agen FE, BE, dan QA.
+- User bisa meminta Anda merevisi rencana kapan saja. Jika direvisi, simpan ulang ke tasks/PLAN.md.
+"""
+
+    command = [
+        "agy",
+        "--prompt-interactive", lead_prompt,
+    ]
+
+    try:
+        subprocess.run(command, cwd=PROJECT)
+    finally:
+        # Bersihkan worker saat Lead Agent ditutup
+        print("\n🧹 Menghentikan semua workers...")
+        for proc in worker_procs:
+            try:
+                proc.terminate()
+                proc.wait(timeout=5)
+            except Exception:
+                proc.kill()
+        print("👋 Semua proses telah dihentikan.")
 
 
 if __name__ == "__main__":
     main()
+

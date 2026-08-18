@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Portal Akun</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-focus: rgba(37, 99, 235, 0.25);
+            --bg-page: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --border-focus: #2563eb;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+            --danger-border: #fecaca;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+            --transition: all 0.2s ease-in-out;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        .login-card {
+            background-color: var(--card-bg);
+            padding: 36px 32px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-header {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .login-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+        }
+
+        .login-header p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .alert-error {
+            display: none;
+            background-color: var(--danger-bg);
+            color: var(--danger);
+            border: 1px solid var(--danger-border);
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            margin-bottom: 18px;
+            line-height: 1.4;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-main);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 11px 14px;
+            font-size: 14px;
+            color: var(--text-main);
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px var(--primary-focus);
+        }
+
+        .form-input.is-invalid {
+            border-color: var(--danger);
+        }
+
+        .field-error {
+            display: none;
+            color: var(--danger);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: var(--primary);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-submit:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--primary-focus);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .auth-footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .auth-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .auth-link:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+        .auth-link:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        .server-status {
+            margin-top: 24px;
+            font-size: 13px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="login-card">
+        <div class="login-header">
+            <h1>Masuk ke Akun</h1>
+            <p>Silakan masukkan email dan kata sandi Anda</p>
+        </div>
+
+        <div id="alertMessage" class="alert-error" role="alert"></div>
+
+        <form id="loginForm" novalidate>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        placeholder="nama@email.com" 
+                        required 
+                        autocomplete="email"
+                    >
+                </div>
+                <span id="emailError" class="field-error">Format email tidak valid.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        placeholder="Masukkan password Anda" 
+                        required 
+                        autocomplete="current-password"
+                    >
+                </div>
+                <span id="passwordError" class="field-error">Password wajib diisi.</span>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn-submit">
+                <span>Login</span>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Belum punya akun? <a href="register.html" class="auth-link">Daftar sekarang</a></p>
+        </div>
+    </main>
+
+    <footer class="server-status">
+        Backend API: <span id="apiEndpoint">http://localhost:5000/api/login</span>
+    </footer>
+
+    <script>
+        const API_URL = "http://localhost:5000/api/login";
+
+        const form = document.getElementById("loginForm");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const submitBtn = document.getElementById("submitBtn");
+        const alertMessage = document.getElementById("alertMessage");
+        const emailError = document.getElementById("emailError");
+        const passwordError = document.getElementById("passwordError");
+
+        function showAlert(msg) {
+            alertMessage.textContent = msg;
+            alertMessage.style.display = "block";
+        }
+
+        function clearAlert() {
+            alertMessage.textContent = "";
+            alertMessage.style.display = "none";
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(String(email).toLowerCase());
+        }
+
+        emailInput.addEventListener("input", () => {
+            emailInput.classList.remove("is-invalid");
+            emailError.style.display = "none";
+            clearAlert();
+        });
+
+        passwordInput.addEventListener("input", () => {
+            passwordInput.classList.remove("is-invalid");
+            passwordError.style.display = "none";
+            clearAlert();
+        });
+
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+            clearAlert();
+
+            let isValid = true;
+            const emailValue = emailInput.value.trim();
+            const passValue = passwordInput.value;
+
+            if (!emailValue) {
+                emailInput.classList.add("is-invalid");
+                emailError.textContent = "Email wajib diisi.";
+                emailError.style.display = "block";
+                isValid = false;
+            } else if (!validateEmail(emailValue)) {
+                emailInput.classList.add("is-invalid");
+                emailError.textContent = "Format email tidak valid (contoh: user@mail.com).";
+                emailError.style.display = "block";
+                isValid = false;
+            }
+
+            if (!passValue) {
+                passwordInput.classList.add("is-invalid");
+                passwordError.textContent = "Password wajib diisi.";
+                passwordError.style.display = "block";
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Memproses...";
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email: emailValue,
+                        password: passValue
+                    })
+                });
+
+                let data;
+                try {
+                    data = await res.json();
+                } catch (parseErr) {
+                    throw new Error("Gagal membaca respon server.");
+                }
+
+                if (res.ok && data && data.success) {
+                    // Simpan sesi autentikasi dan data user
+                    if (data.data) {
+                        if (data.data.token) {
+                            sessionStorage.setItem("authToken", data.data.token);
+                        }
+                        if (data.data.user) {
+                            sessionStorage.setItem("userEmail", data.data.user.email || emailValue);
+                            sessionStorage.setItem("userName", data.data.user.name || "");
+                            sessionStorage.setItem("userData", JSON.stringify(data.data.user));
+                        }
+                    } else {
+                        sessionStorage.setItem("userEmail", emailValue);
+                    }
+                    window.location.href = "halaman2.html";
+                } else {
+                    let errorMessage = (data && data.message) ? data.message : "Terjadi kesalahan saat login.";
+                    if (data && data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
+                        errorMessage = data.errors.join(", ");
+                    }
+                    showAlert(errorMessage);
+                    if (res.status === 401) {
+                        passwordInput.classList.add("is-invalid");
+                    }
+                }
+            } catch (e) {
+                console.error("Fetch API error:", e);
+                showAlert("Gagal terhubung ke server backend (http://localhost:5000). Pastikan backend aktif.");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Login";
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Akun Baru - Portal Akun</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-focus: rgba(37, 99, 235, 0.25);
+            --bg-page: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --border-focus: #2563eb;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+            --danger-border: #fecaca;
+            --success: #16a34a;
+            --success-bg: #f0fdf4;
+            --success-border: #bbf7d0;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+            --transition: all 0.2s ease-in-out;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        .register-card {
+            background-color: var(--card-bg);
+            padding: 36px 32px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .register-header {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .register-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+        }
+
+        .register-header p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .alert {
+            display: none;
+            padding: 11px 14px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            margin-bottom: 18px;
+            line-height: 1.4;
+            transition: var(--transition);
+        }
+
+        .alert-error {
+            display: block;
+            background-color: var(--danger-bg);
+            color: var(--danger);
+            border: 1px solid var(--danger-border);
+        }
+
+        .alert-success {
+            display: block;
+            background-color: var(--success-bg);
+            color: var(--success);
+            border: 1px solid var(--success-border);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-main);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 11px 14px;
+            font-size: 14px;
+            color: var(--text-main);
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px var(--primary-focus);
+        }
+
+        .form-input.is-invalid {
+            border-color: var(--danger);
+        }
+
+        .field-error {
+            display: none;
+            color: var(--danger);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: var(--primary);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-submit:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--primary-focus);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .auth-footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .auth-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .auth-link:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+        .auth-link:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        .server-status {
+            margin-top: 24px;
+            font-size: 13px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="register-card">
+        <header class="register-header">
+            <h1>Daftar Akun Baru</h1>
+            <p>Lengkapi formulir di bawah untuk membuat akun baru</p>
+        </header>
+
+        <div id="alertMessage" class="alert" role="alert"></div>
+
+        <form id="registerForm" novalidate>
+            <div class="form-group">
+                <label for="name">Nama Lengkap</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        class="form-input" 
+                        placeholder="Contoh: Budi Santoso" 
+                        required 
+                        autocomplete="name"
+                    >
+                </div>
+                <span id="nameError" class="field-error">Nama lengkap minimal 2 karakter.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        placeholder="nama@email.com" 
+                        required 
+                        autocomplete="email"
+                    >
+                </div>
+                <span id="emailError" class="field-error">Format email tidak valid (contoh: user@mail.com).</span>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        placeholder="Minimal 6 karakter" 
+                        required 
+                        autocomplete="new-password"
+                    >
+                </div>
+                <span id="passwordError" class="field-error">Password minimal 6 karakter.</span>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn-submit">
+                <span>Daftar</span>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Sudah punya akun? <a href="index.html" class="auth-link">Masuk di sini</a></p>
+        </div>
+    </main>
+
+    <footer class="server-status">
+        Backend API: <span id="apiEndpoint">http://localhost:5000/api/register</span>
+    </footer>
+
+    <script>
+        const API_URL = "http://localhost:5000/api/register";
+
+        const form = document.getElementById("registerForm");
+        const nameInput = document.getElementById("name");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const submitBtn = document.getElementById("submitBtn");
+        const alertMessage = document.getElementById("alertMessage");
+        const nameError = document.getElementById("nameError");
+        const emailError = document.getElementById("emailError");
+        const passwordError = document.getElementById("passwordError");
+
+        function showAlert(msg, type = "error") {
+            alertMessage.textContent = msg;
+            alertMessage.className = "alert " + (type === "success" ? "alert-success" : "alert-error");
+            alertMessage.style.display = "block";
+        }
+
+        function clearAlert() {
+            alertMessage.textContent = "";
+            alertMessage.className = "alert";
+            alertMessage.style.display = "none";
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(String(email).toLowerCase());
+        }
+
+        nameInput.addEventListener("input", () => {
+            nameInput.classList.remove("is-invalid");
+            nameError.style.display = "none";
+            clearAlert();
+        });
+
+        emailInput.addEventListener("input", () => {
+            emailInput.classList.remove("is-invalid");
+            emailError.style.display = "none";
+            clearAlert();
+        });
+
+        passwordInput.addEventListener("input", () => {
+            passwordInput.classList.remove("is-invalid");
+            passwordError.style.display = "none";
+            clearAlert();
+        });
+
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+            clearAlert();
+
+            let isValid = true;
+            const nameValue = nameInput.value.trim();
+            const emailValue = emailInput.value.trim();
+            const passValue = passwordInput.value;
+
+            // Validasi Nama Lengkap
+            if (!nameValue) {
+                nameInput.classList.add("is-invalid");
+                nameError.textContent = "Nama lengkap wajib diisi.";
+                nameError.style.display = "block";
+                isValid = false;
+            } else if (nameValue.length < 2) {
+                nameInput.classList.add("is-invalid");
+                nameError.textContent = "Nama lengkap minimal 2 karakter.";
+                nameError.style.display = "block";
+                isValid = false;
+            }
+
+            // Validasi Email
+            if (!emailValue) {
+                emailInput.classList.add("is-invalid");
+                emailError.textContent = "Email wajib diisi.";
+                emailError.style.display = "block";
+                isValid = false;
+            } else if (!validateEmail(emailValue)) {
+                emailInput.classList.add("is-invalid");
+                emailError.textContent = "Format email tidak valid (contoh: user@mail.com).";
+                emailError.style.display = "block";
+                isValid = false;
+            }
+
+            // Validasi Password
+            if (!passValue) {
+                passwordInput.classList.add("is-invalid");
+                passwordError.textContent = "Password wajib diisi.";
+                passwordError.style.display = "block";
+                isValid = false;
+            } else if (passValue.length < 6) {
+                passwordInput.classList.add("is-invalid");
+                passwordError.textContent = "Password minimal 6 karakter.";
+                passwordError.style.display = "block";
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Mendaftarkan...";
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: nameValue,
+                        email: emailValue,
+                        password: passValue
+                    })
+                });
+
+                let data;
+                try {
+                    data = await res.json();
+                } catch (parseErr) {
+                    throw new Error("Gagal membaca respon server.");
+                }
+
+                if (res.status === 201 || (res.ok && data && data.success)) {
+                    showAlert("Registrasi berhasil! Mengalihkan ke halaman login...", "success");
+                    form.reset();
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = "Berhasil!";
+                    setTimeout(() => {
+                        window.location.href = "index.html";
+                    }, 1800);
+                } else {
+                    let errorMessage = (data && data.message) ? data.message : "Terjadi kesalahan saat registrasi.";
+                    if (data && data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
+                        errorMessage = data.errors.join(", ");
+                    }
+                    showAlert(errorMessage, "error");
+
+                    if (res.status === 409) {
+                        emailInput.classList.add("is-invalid");
+                    }
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Daftar";
+                }
+            } catch (e) {
+                console.error("Fetch API error:", e);
+                showAlert("Gagal terhubung ke server backend (http://localhost:5000). Pastikan backend aktif.", "error");
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Daftar";
+            }
+        });
+    </script>
+</body>
+</html>
